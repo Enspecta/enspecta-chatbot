@@ -10,11 +10,7 @@ const CONFIG = {
 
 const WELCOME = 'Hej! Jag är Aida, besiktningstekniker hos Enspecta. Jag kan svara på frågor om besiktningar, besiktningsprotokoll och byggnadsteknik. Vad kan jag hjälpa dig med?';
 
-const QUICK_ACTIONS = [
-  { label: 'Vad kostar en besiktning?', action: 'send' },
-  { label: 'Hur går det till?', action: 'send' },
-  { label: 'Boka besiktning', action: 'book' },
-];
+const QUICK_ACTIONS = [];
 
 function getSessionId() {
   try {
