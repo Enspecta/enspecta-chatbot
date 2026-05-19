@@ -1,4 +1,5 @@
 const css = require('./styles');
+const Vapi = require('@vapi-ai/web').default;
 
 const CONFIG = {
   bookingUrl: 'https://www.enspecta.se',
@@ -42,12 +43,6 @@ function renderMarkdown(text) {
   );
 }
 
-async function loadVapiSdk() {
-  if (window.__VapiClass) return;
-  const mod = await import('https://cdn.jsdelivr.net/npm/@vapi-ai/web/dist/vapi.js');
-  window.__VapiClass = mod.default ?? mod.Vapi ?? Object.values(mod).find(v => typeof v === 'function');
-  if (!window.__VapiClass) throw new Error('Kunde inte hitta Vapi-klassen i SDK:n');
-}
 
 (function () {
   const style = document.createElement('style');
@@ -211,9 +206,8 @@ async function loadVapiSdk() {
     voiceBtn.disabled = true;
     voiceStatus.textContent = 'Laddar…';
     try {
-      await loadVapiSdk();
       if (!vapi) {
-        vapi = new window.__VapiClass(VAPI_PUBLIC_KEY);
+        vapi = new Vapi(VAPI_PUBLIC_KEY);
         vapi.on('call-start', () => {
           voiceBtn.style.display = 'none';
           voiceActive.classList.add('visible');
