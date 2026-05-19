@@ -1,0 +1,88 @@
+const express = require('express');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const Anthropic = require('@anthropic-ai/sdk').default;
+const { systemPrompt } = require('./knowledge');
+
+const app = express();
+app.use(express.json());
+
+// CORS: allow production domains and any localhost port in dev
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+  : [];
+const devOriginPattern = /^http:\/\/localhost:\d+$/;
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || devOriginPattern.test(origin) || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
+
+// Rate limit: 20 requests per IP per hour
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  message: { error: 'För många frågor. Vänta lite och försök igen.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/chat', limiter);
+
+// Serve built widget as static file at /widget.js
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../widget/dist')));
+
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+app.post('/api/chat', async (req, res) => {
+  const { message, history } = req.body;
+
+  if (!message || typeof message !== 'string' || message.trim().length === 0) {
+    return res.status(400).json({
+      error: 'Ogiltig förfrågan. Kontrollera att message är ifyllt och max 1000 tecken.'
+    });
+  }
+  if (message.length > 1000) {
+    return res.status(400).json({
+      error: 'Ogiltig förfrågan. Kontrollera att message är ifyllt och max 1000 tecken.'
+    });
+  }
+  if (history !== undefined && !Array.isArray(history)) {
+    return res.status(400).json({
+      error: 'Ogiltig förfrågan. Kontrollera att message är ifyllt och max 1000 tecken.'
+    });
+  }
+
+  const truncatedHistory = Array.isArray(history) ? history.slice(-10) : [];
+
+  try {
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1024,
+      system: [
+        {
+          type: 'text',
+          text: systemPrompt,
+          cache_control: { type: 'ephemeral' }
+        }
+      ],
+      messages: [
+        ...truncatedHistory,
+        { role: 'user', content: message }
+      ]
+    });
+
+    const reply = response.content[0]?.text ?? '';
+    res.json({ reply });
+  } catch (err) {
+    console.error('Claude API error:', err.message);
+    res.status(500).json({ error: 'Något gick fel. Försök igen eller kontakta oss direkt.' });
+  }
+});
+
+module.exports = app;
