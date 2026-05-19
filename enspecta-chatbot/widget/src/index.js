@@ -28,7 +28,7 @@ function escapeHtml(str) {
 function renderMarkdown(text) {
   return escapeHtml(text).replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, (_, label, url) =>
     /^https:\/\/(www\.)?enspecta\.se(\/|$)/.test(url)
-      ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`
+      ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
       : label
   );
 }
