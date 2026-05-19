@@ -59,7 +59,12 @@ app.post('/api/chat', async (req, res) => {
     });
   }
 
-  const truncatedHistory = Array.isArray(history) ? history.slice(-10) : [];
+  const validRoles = new Set(['user', 'assistant']);
+  const truncatedHistory = Array.isArray(history)
+    ? history
+        .slice(-10)
+        .filter(h => validRoles.has(h?.role) && typeof h?.content === 'string')
+    : [];
 
   try {
     const response = await client.messages.create({
