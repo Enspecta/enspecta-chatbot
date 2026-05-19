@@ -1,21 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 const Anthropic = require('@anthropic-ai/sdk').default;
 const { systemPrompt } = require('./knowledge');
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '50kb' }));
 
 // CORS: allow production domains and any localhost port in dev
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
   : [];
+const isProduction = process.env.NODE_ENV === 'production';
 const devOriginPattern = /^http:\/\/localhost:\d+$/;
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || devOriginPattern.test(origin) || allowedOrigins.includes(origin)) {
+    if (!origin || (!isProduction && devOriginPattern.test(origin)) || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -34,7 +36,6 @@ const limiter = rateLimit({
 app.use('/api/chat', limiter);
 
 // Serve built widget as static file at /widget.js
-const path = require('path');
 app.use(express.static(path.join(__dirname, '../widget/dist')));
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
