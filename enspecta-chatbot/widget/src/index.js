@@ -42,15 +42,11 @@ function renderMarkdown(text) {
   );
 }
 
-function loadVapiSdk() {
-  return new Promise((resolve, reject) => {
-    if (window.Vapi) { resolve(); return; }
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/@vapi-ai/web/dist/vapi.js';
-    s.onload = resolve;
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
+async function loadVapiSdk() {
+  if (window.__VapiClass) return;
+  const mod = await import('https://cdn.jsdelivr.net/npm/@vapi-ai/web/dist/vapi.js');
+  window.__VapiClass = mod.default ?? mod.Vapi ?? Object.values(mod).find(v => typeof v === 'function');
+  if (!window.__VapiClass) throw new Error('Kunde inte hitta Vapi-klassen i SDK:n');
 }
 
 (function () {
@@ -217,7 +213,7 @@ function loadVapiSdk() {
     try {
       await loadVapiSdk();
       if (!vapi) {
-        vapi = new window.Vapi(VAPI_PUBLIC_KEY);
+        vapi = new window.__VapiClass(VAPI_PUBLIC_KEY);
         vapi.on('call-start', () => {
           voiceBtn.style.display = 'none';
           voiceActive.classList.add('visible');
@@ -232,17 +228,19 @@ function loadVapiSdk() {
         });
         vapi.on('speech-start', () => { voiceStatus.textContent = 'Aida pratar…'; });
         vapi.on('speech-end', () => { voiceStatus.textContent = 'Aida lyssnar…'; });
-        vapi.on('error', () => {
+        vapi.on('error', (e) => {
+          console.error('VAPI error:', e);
           voiceBtn.style.display = '';
           voiceActive.classList.remove('visible');
           voiceBtn.disabled = false;
-          addBubble('Det gick inte att starta samtalet. Försök igen.', 'bot');
+          addBubble('Det gick inte att starta samtalet: ' + (e?.message || JSON.stringify(e)), 'bot');
         });
       }
       await vapi.start(VAPI_ASSISTANT_ID);
-    } catch {
+    } catch (e) {
+      console.error('Voice start error:', e);
       voiceBtn.disabled = false;
-      addBubble('Det gick inte att starta samtalet. Försök igen.', 'bot');
+      addBubble('Det gick inte att starta samtalet: ' + (e?.message || String(e)), 'bot');
     }
   });
 
