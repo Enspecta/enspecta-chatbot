@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <clipPath id="clip"><circle cx="100" cy="100" r="100"/></clipPath>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a3c5e"/>
+      <stop offset="100%" stop-color="#1e5491"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+
+  <!-- Body / uniform -->
+  <ellipse cx="100" cy="178" rx="62" ry="42" fill="#15304d"/>
+  <!-- Hi-vis vest stripe -->
+  <path d="M55 158 L145 158 L148 168 L52 168Z" fill="#f5a623" opacity="0.85"/>
+  <path d="M55 168 L145 168 L148 178 L52 178Z" fill="#15304d"/>
+
+  <!-- Neck -->
+  <rect x="93" y="122" width="14" height="22" rx="6" fill="#d4956a"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="97" r="34" fill="#d4956a"/>
+
+  <!-- Hair behind head -->
+  <path d="M66 97 Q66 56 100 54 Q134 56 134 97 Q128 70 100 68 Q72 70 66 97Z" fill="#1a0a00"/>
+  <!-- Side hair flowing down -->
+  <path d="M66 97 Q61 115 65 128 Q70 116 70 100Z" fill="#1a0a00"/>
+  <path d="M134 97 Q139 115 135 128 Q130 116 130 100Z" fill="#1a0a00"/>
+
+  <!-- Hard hat – brim -->
+  <ellipse cx="100" cy="70" rx="42" ry="9" fill="#1a3c5e"/>
+  <!-- Hard hat – dome -->
+  <path d="M62 70 Q62 42 100 40 Q138 42 138 70Z" fill="#1a3c5e"/>
+  <!-- Hat highlight -->
+  <path d="M75 48 Q100 42 118 50" stroke="rgba(255,255,255,0.25)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Hat brim underside -->
+  <ellipse cx="100" cy="70" rx="42" ry="9" fill="#152e48"/>
+
+  <!-- Eyes -->
+  <ellipse cx="88" cy="102" rx="5.5" ry="6" fill="white"/>
+  <ellipse cx="112" cy="102" rx="5.5" ry="6" fill="white"/>
+  <circle cx="89.5" cy="103" r="3.5" fill="#2c1810"/>
+  <circle cx="113.5" cy="103" r="3.5" fill="#2c1810"/>
+  <circle cx="91" cy="101.5" r="1.2" fill="white"/>
+  <circle cx="115" cy="101.5" r="1.2" fill="white"/>
+
+  <!-- Eyebrows -->
+  <path d="M82 94 Q88 91 94 94" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M106 94 Q112 91 118 94" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Nose -->
+  <path d="M98 110 Q96 117 100 119 Q104 117 102 110" stroke="#b07050" stroke-width="1.5" fill="none"/>
+
+  <!-- Smile -->
+  <path d="M89 126 Q100 133 111 126" stroke="#9a5535" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Clipboard in hand -->
+  <rect x="128" y="138" width="26" height="34" rx="3" fill="white" opacity="0.92"/>
+  <rect x="136" y="134" width="10" height="7" rx="2" fill="#ccc"/>
+  <line x1="132" y1="149" x2="150" y2="149" stroke="#1a3c5e" stroke-width="2"/>
+  <line x1="132" y1="155" x2="150" y2="155" stroke="#1a3c5e" stroke-width="2"/>
+  <line x1="132" y1="161" x2="145" y2="161" stroke="#1a3c5e" stroke-width="2"/>
+  <circle cx="136" cy="149" r="1.5" fill="#f5a623"/>
+  <circle cx="136" cy="155" r="1.5" fill="#f5a623"/>
+  <circle cx="136" cy="161" r="1.5" fill="#f5a623"/>
+</svg>

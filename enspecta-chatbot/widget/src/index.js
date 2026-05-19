@@ -8,7 +8,7 @@ const CONFIG = {
     || 'https://enspecta-chatbot.onrender.com/api/chat',
 };
 
-const WELCOME = 'Hej! Jag är Aida, besiktningsman hos Enspecta. Jag kan svara på frågor om besiktningar, besiktningsprotokoll och byggnadsteknik. Vad kan jag hjälpa dig med?';
+const WELCOME = 'Hej! Jag är Aida, besiktningstekniker hos Enspecta. Jag kan svara på frågor om besiktningar, besiktningsprotokoll och byggnadsteknik. Vad kan jag hjälpa dig med?';
 
 const QUICK_ACTIONS = [
   { label: 'Vad kostar en besiktning?', action: 'send' },
@@ -66,7 +66,7 @@ function renderMarkdown(text) {
   win.className = 'enspecta-chat-window enspecta-chat-hidden';
   win.innerHTML = `
     <div class="enspecta-chat-header">
-      <div class="enspecta-chat-avatar">👷</div>
+      <img class="enspecta-chat-avatar" src="https://enspecta-chatbot.onrender.com/aida.svg" alt="Aida Enspectsson">
       <div>
         <div class="enspecta-chat-header-name">Aida</div>
         <div class="enspecta-chat-header-sub">Besiktningsmannen · Enspecta</div>

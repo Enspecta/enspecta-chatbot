@@ -57,19 +57,16 @@ const css = `
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
   flex-shrink: 0;
   position: relative;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.3);
 }
 .enspecta-chat-avatar::after {
   content: '';
   position: absolute;
-  bottom: 1px;
-  right: 1px;
+  bottom: 0px;
+  right: 0px;
   width: 10px;
   height: 10px;
   background: #4cd964;
