@@ -1,8 +1,8 @@
 const css = require('./styles');
 
 const CONFIG = {
-  bookingUrl: 'https://enspecta.se/boka',
-  phone: '010-XXX XX XX',
+  bookingUrl: 'https://www.enspecta.se',
+  phone: '010 33 33 365',
   email: 'info@enspecta.se',
   apiUrl: (typeof window !== 'undefined' && window.__ENSPECTA_CHAT_API_URL__)
     || 'https://chatbot.enspecta.se/api/chat',
