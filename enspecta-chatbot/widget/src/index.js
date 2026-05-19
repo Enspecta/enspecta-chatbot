@@ -76,7 +76,7 @@ function renderMarkdown(text) {
       <textarea class="enspecta-chat-input" placeholder="Skriv din fråga..." rows="1"></textarea>
       <button class="enspecta-chat-send" aria-label="Skicka">➤</button>
     </div>
-    <div class="enspecta-chat-footer">Enspecta · Certifierade besiktningsmän</div>
+    <div class="enspecta-chat-footer">Enspecta · Certifierade besiktningstekniker</div>
   `;
 
   document.body.appendChild(toggle);
