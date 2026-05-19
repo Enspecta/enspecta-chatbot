@@ -14,10 +14,17 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
   : [];
 const isProduction = process.env.NODE_ENV === 'production';
 const devOriginPattern = /^http:\/\/localhost:\d+$/;
+// Render sets this automatically; lets the server accept requests from its own domain
+const selfUrl = (process.env.RENDER_EXTERNAL_URL || '').replace(/\/$/, '');
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || (!isProduction && devOriginPattern.test(origin)) || allowedOrigins.includes(origin)) {
+    if (
+      !origin ||
+      (!isProduction && devOriginPattern.test(origin)) ||
+      allowedOrigins.includes(origin) ||
+      (selfUrl && origin === selfUrl)
+    ) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
