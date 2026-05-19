@@ -16,11 +16,19 @@ const QUICK_ACTIONS = [
   { label: 'Boka besiktning', action: 'book' },
 ];
 
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 // Render [text](url) as <a> only when url is on enspecta.se
 function renderMarkdown(text) {
-  return text.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, (_, label, url) =>
-    /enspecta\.se/.test(url)
-      ? `<a href="${url}" target="_blank" rel="noopener">${label}</a>`
+  return escapeHtml(text).replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, (_, label, url) =>
+    /^https:\/\/(www\.)?enspecta\.se(\/|$)/.test(url)
+      ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`
       : label
   );
 }
@@ -92,7 +100,7 @@ function renderMarkdown(text) {
       btn.addEventListener('click', () => {
         quickEl.innerHTML = '';
         if (action === 'book') {
-          window.open(CONFIG.bookingUrl, '_blank', 'noopener');
+          window.open(CONFIG.bookingUrl, '_blank', 'noopener,noreferrer');
         } else {
           sendMessage(label);
         }
@@ -124,8 +132,11 @@ function renderMarkdown(text) {
         addBubble(`Något gick fel. Försök igen eller ring oss på ${CONFIG.phone}`, 'bot');
       } else {
         const data = await res.json();
-        addBubble(data.reply, 'bot');
-        saveHistory([...history, { role: 'user', content: text }, { role: 'assistant', content: data.reply }]);
+        const reply = typeof data.reply === 'string' && data.reply.length > 0
+          ? data.reply
+          : 'Inget svar från servern.';
+        addBubble(reply, 'bot');
+        saveHistory([...history, { role: 'user', content: text }, { role: 'assistant', content: reply }]);
       }
     } catch {
       typing.remove();
