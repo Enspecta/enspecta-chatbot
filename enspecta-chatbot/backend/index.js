@@ -34,6 +34,15 @@ function checkAdminAuth(req, res, next) {
   next();
 }
 
+// Health check — visar om Supabase och admin är konfigurerade
+app.get('/api/health', (_req, res) => {
+  res.json({
+    supabase: !!(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY),
+    admin: !!process.env.ADMIN_PASSWORD,
+    anthropic: !!process.env.ANTHROPIC_API_KEY,
+  });
+});
+
 // Admin dashboard page
 app.get('/admin', (_req, res) => {
   res.sendFile(path.join(__dirname, '../widget/dist/admin.html'));

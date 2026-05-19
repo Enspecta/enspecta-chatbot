@@ -12,22 +12,25 @@ function getClient() {
 
 async function logChat({ sessionId, userMessage, botReply, hadError }) {
   const db = getClient();
-  if (!db) return;
-  try {
-    await db.from('chat_logs').insert({
-      session_id: sessionId,
-      user_message: userMessage,
-      bot_reply: botReply || null,
-      had_error: hadError,
-    });
-  } catch (err) {
-    console.error('Analytics log error:', err.message);
+  if (!db) {
+    console.warn('Analytics: SUPABASE_URL/SUPABASE_ANON_KEY saknas — loggar inte.');
+    return;
   }
+  const { error } = await db.from('chat_logs').insert({
+    session_id: sessionId,
+    user_message: userMessage,
+    bot_reply: botReply || null,
+    had_error: hadError,
+  });
+  if (error) console.error('Analytics insert error:', error.message, error.details);
 }
 
 async function getStats() {
   const db = getClient();
-  if (!db) return null;
+  if (!db) {
+    console.warn('Analytics: SUPABASE_URL/SUPABASE_ANON_KEY saknas.');
+    return null;
+  }
 
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
