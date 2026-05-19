@@ -43,6 +43,29 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
+// Supabase diagnostik — testar insert och select
+app.get('/api/db-test', async (_req, res) => {
+  const { getStats, logChat } = require('./analytics');
+  const results = {};
+
+  try {
+    await logChat({ sessionId: 'db-test', userMessage: 'testfråga', botReply: 'testsvar', hadError: false });
+    results.insert = 'ok';
+  } catch (e) {
+    results.insert = 'fel: ' + e.message;
+  }
+
+  try {
+    const stats = await getStats();
+    results.query = stats ? 'ok' : 'null (Supabase ej konfigurerat)';
+    results.totalMessages = stats?.totalMessages;
+  } catch (e) {
+    results.query = 'fel: ' + e.message;
+  }
+
+  res.json(results);
+});
+
 // Admin dashboard page
 app.get('/admin', (_req, res) => {
   res.sendFile(path.join(__dirname, '../widget/dist/admin.html'));
