@@ -8,6 +8,9 @@ const CONFIG = {
     || 'https://enspecta-chatbot.onrender.com/api/chat',
 };
 
+const VAPI_PUBLIC_KEY = 'ee95b777-9ad5-443d-9b5d-0c733a319276';
+const VAPI_ASSISTANT_ID = '466c99ad-1a4f-4952-a21f-c092c25d0a93';
+
 const WELCOME = 'Hej! Jag är Aida, besiktningstekniker hos Enspecta. Jag kan svara på frågor om besiktningar, besiktningsprotokoll och byggnadsteknik. Vad kan jag hjälpa dig med?';
 
 const QUICK_ACTIONS = [];
@@ -31,13 +34,23 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-// Render [text](url) as <a> only when url is on enspecta.se
 function renderMarkdown(text) {
   return escapeHtml(text).replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, (_, label, url) =>
     /^https:\/\/(www\.)?enspecta\.se(\/|$)/.test(url)
       ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
       : label
   );
+}
+
+function loadVapiSdk() {
+  return new Promise((resolve, reject) => {
+    if (window.Vapi) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@vapi-ai/web/dist/vapi.js';
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
 }
 
 (function () {
@@ -66,12 +79,24 @@ function renderMarkdown(text) {
         <img class="enspecta-chat-avatar" src="https://enspecta-chatbot.onrender.com/aida.svg" alt="Aida Enspectsson">
       </div>
       <div>
-        <div class="enspecta-chat-header-name">Aida</div>
-        <div class="enspecta-chat-header-sub">Besiktningsmannen · Enspecta</div>
+        <div class="enspecta-chat-header-name">Aida Enspectsson</div>
+        <div class="enspecta-chat-header-sub">Besiktningstekniker · Enspecta</div>
       </div>
     </div>
     <div class="enspecta-chat-messages"></div>
     <div class="enspecta-chat-quick"></div>
+    <div class="enspecta-chat-voice-bar">
+      <button class="enspecta-chat-voice-btn" id="enspecta-voice-btn">
+        <span class="enspecta-voice-icon">🎙️</span>
+        <span class="enspecta-voice-label">Prata med mig</span>
+      </button>
+      <div class="enspecta-chat-voice-active" id="enspecta-voice-active">
+        <div class="enspecta-voice-pulse"></div>
+        <span class="enspecta-voice-status" id="enspecta-voice-status">Ansluter…</span>
+        <button class="enspecta-voice-mute" id="enspecta-voice-mute" title="Stäng av mikrofon">🎤</button>
+        <button class="enspecta-voice-end" id="enspecta-voice-end" title="Avsluta samtal">📵</button>
+      </div>
+    </div>
     <div class="enspecta-chat-input-row">
       <textarea class="enspecta-chat-input" placeholder="Skriv din fråga..." rows="1"></textarea>
       <button class="enspecta-chat-send" aria-label="Skicka">➤</button>
@@ -86,7 +111,14 @@ function renderMarkdown(text) {
   const quickEl = win.querySelector('.enspecta-chat-quick');
   const inputEl = win.querySelector('.enspecta-chat-input');
   const sendBtn = win.querySelector('.enspecta-chat-send');
+  const voiceBtn = win.querySelector('#enspecta-voice-btn');
+  const voiceActive = win.querySelector('#enspecta-voice-active');
+  const voiceStatus = win.querySelector('#enspecta-voice-status');
+  const voiceMute = win.querySelector('#enspecta-voice-mute');
+  const voiceEnd = win.querySelector('#enspecta-voice-end');
   let quickShown = false;
+  let vapi = null;
+  let muted = false;
 
   function addBubble(text, role) {
     if (role === 'user') {
@@ -177,6 +209,54 @@ function renderMarkdown(text) {
       sendBtn.disabled = false;
     }
   }
+
+  // ── Voice ──
+  voiceBtn.addEventListener('click', async () => {
+    voiceBtn.disabled = true;
+    voiceStatus.textContent = 'Laddar…';
+    try {
+      await loadVapiSdk();
+      if (!vapi) {
+        vapi = new window.Vapi(VAPI_PUBLIC_KEY);
+        vapi.on('call-start', () => {
+          voiceBtn.style.display = 'none';
+          voiceActive.classList.add('visible');
+          voiceStatus.textContent = 'Aida lyssnar…';
+        });
+        vapi.on('call-end', () => {
+          voiceBtn.style.display = '';
+          voiceActive.classList.remove('visible');
+          voiceBtn.disabled = false;
+          muted = false;
+          voiceMute.textContent = '🎤';
+        });
+        vapi.on('speech-start', () => { voiceStatus.textContent = 'Aida pratar…'; });
+        vapi.on('speech-end', () => { voiceStatus.textContent = 'Aida lyssnar…'; });
+        vapi.on('error', () => {
+          voiceBtn.style.display = '';
+          voiceActive.classList.remove('visible');
+          voiceBtn.disabled = false;
+          addBubble('Det gick inte att starta samtalet. Försök igen.', 'bot');
+        });
+      }
+      await vapi.start(VAPI_ASSISTANT_ID);
+    } catch {
+      voiceBtn.disabled = false;
+      addBubble('Det gick inte att starta samtalet. Försök igen.', 'bot');
+    }
+  });
+
+  voiceMute.addEventListener('click', () => {
+    if (!vapi) return;
+    muted = !muted;
+    vapi.setMuted(muted);
+    voiceMute.textContent = muted ? '🔇' : '🎤';
+    voiceStatus.textContent = muted ? 'Mikrofon av' : 'Aida lyssnar…';
+  });
+
+  voiceEnd.addEventListener('click', () => {
+    if (vapi) vapi.stop();
+  });
 
   toggle.addEventListener('click', () => {
     const isOpen = !win.classList.contains('enspecta-chat-hidden');
