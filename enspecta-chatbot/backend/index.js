@@ -45,25 +45,29 @@ app.get('/api/health', (_req, res) => {
 
 // Supabase diagnostik — testar insert och select
 app.get('/api/db-test', async (_req, res) => {
-  const { getStats, logChat } = require('./analytics');
-  const results = {};
+  const { createClient } = require('@supabase/supabase-js');
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) return res.json({ error: 'SUPABASE_URL eller SUPABASE_ANON_KEY saknas' });
 
-  try {
-    await logChat({ sessionId: 'db-test', userMessage: 'testfråga', botReply: 'testsvar', hadError: false });
-    results.insert = 'ok';
-  } catch (e) {
-    results.insert = 'fel: ' + e.message;
-  }
+  const db = createClient(url, key);
 
-  try {
-    const stats = await getStats();
-    results.query = stats ? 'ok' : 'null (Supabase ej konfigurerat)';
-    results.totalMessages = stats?.totalMessages;
-  } catch (e) {
-    results.query = 'fel: ' + e.message;
-  }
+  // Raw insert — show actual Supabase error
+  const insert = await db.from('chat_logs').insert({
+    session_id: 'db-test',
+    user_message: 'testfråga',
+    bot_reply: 'testsvar',
+    had_error: false,
+  });
 
-  res.json(results);
+  // Raw count — show actual result
+  const count = await db.from('chat_logs').select('*', { count: 'exact', head: true });
+
+  res.json({
+    insertError: insert.error ? { message: insert.error.message, code: insert.error.code, details: insert.error.details, hint: insert.error.hint } : null,
+    countError: count.error ? { message: count.error.message, code: count.error.code } : null,
+    totalMessages: count.count,
+  });
 });
 
 // Admin dashboard page
