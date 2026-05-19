@@ -64,6 +64,7 @@ app.get('/api/db-test', async (_req, res) => {
   const count = await db.from('chat_logs').select('*', { count: 'exact', head: true });
 
   res.json({
+    supabaseUrl: url,
     insertError: insert.error ? { message: insert.error.message, code: insert.error.code, details: insert.error.details, hint: insert.error.hint } : null,
     countError: count.error ? { message: count.error.message, code: count.error.code } : null,
     totalMessages: count.count,
