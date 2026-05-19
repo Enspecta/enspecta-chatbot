@@ -66,7 +66,9 @@ function renderMarkdown(text) {
   win.className = 'enspecta-chat-window enspecta-chat-hidden';
   win.innerHTML = `
     <div class="enspecta-chat-header">
-      <img class="enspecta-chat-avatar" src="https://enspecta-chatbot.onrender.com/aida.svg" alt="Aida Enspectsson">
+      <div class="enspecta-chat-avatar-wrap">
+        <img class="enspecta-chat-avatar" src="https://enspecta-chatbot.onrender.com/aida.svg" alt="Aida Enspectsson">
+      </div>
       <div>
         <div class="enspecta-chat-header-name">Aida</div>
         <div class="enspecta-chat-header-sub">Besiktningsmannen · Enspecta</div>
@@ -91,10 +93,26 @@ function renderMarkdown(text) {
   let quickShown = false;
 
   function addBubble(text, role) {
+    if (role === 'user') {
+      const bubble = document.createElement('div');
+      bubble.className = 'enspecta-chat-bubble enspecta-chat-user';
+      bubble.innerHTML = renderMarkdown(text);
+      messagesEl.appendChild(bubble);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return bubble;
+    }
+    const row = document.createElement('div');
+    row.className = 'enspecta-chat-bot-row';
+    const avatar = document.createElement('img');
+    avatar.className = 'enspecta-chat-bubble-avatar';
+    avatar.src = 'https://enspecta-chatbot.onrender.com/aida.svg';
+    avatar.alt = 'Aida';
     const bubble = document.createElement('div');
-    bubble.className = `enspecta-chat-bubble enspecta-chat-${role === 'user' ? 'user' : 'bot'}`;
+    bubble.className = 'enspecta-chat-bubble enspecta-chat-bot';
     bubble.innerHTML = renderMarkdown(text);
-    messagesEl.appendChild(bubble);
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+    messagesEl.appendChild(row);
     messagesEl.scrollTop = messagesEl.scrollHeight;
     return bubble;
   }
