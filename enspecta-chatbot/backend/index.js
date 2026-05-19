@@ -9,28 +9,8 @@ const app = express();
 app.use(express.json({ limit: '50kb' }));
 
 // CORS: allow production domains and any localhost port in dev
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-  : [];
-const isProduction = process.env.NODE_ENV === 'production';
-const devOriginPattern = /^http:\/\/localhost:\d+$/;
-// Render sets this automatically; lets the server accept requests from its own domain
-const selfUrl = (process.env.RENDER_EXTERNAL_URL || '').replace(/\/$/, '');
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if (
-      !origin ||
-      (!isProduction && devOriginPattern.test(origin)) ||
-      allowedOrigins.includes(origin) ||
-      (selfUrl && origin === selfUrl)
-    ) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
-}));
+// Public widget API — allow all origins so it can be embedded on any site
+app.use(cors());
 
 // Rate limit: 20 requests per IP per hour
 const limiter = rateLimit({
