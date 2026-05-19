@@ -5,7 +5,7 @@ const CONFIG = {
   phone: '010 33 33 365',
   email: 'info@enspecta.se',
   apiUrl: (typeof window !== 'undefined' && window.__ENSPECTA_CHAT_API_URL__)
-    || 'https://chatbot.enspecta.se/api/chat',
+    || 'https://enspecta-chatbot.onrender.com/api/chat',
 };
 
 const WELCOME = 'Hej! Jag är Aida, besiktningsman hos Enspecta. Jag kan svara på frågor om besiktningar, besiktningsprotokoll och byggnadsteknik. Vad kan jag hjälpa dig med?';
