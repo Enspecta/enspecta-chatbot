@@ -16,6 +16,17 @@ const QUICK_ACTIONS = [
   { label: 'Boka besiktning', action: 'book' },
 ];
 
+function getSessionId() {
+  try {
+    let id = sessionStorage.getItem('enspecta_session_id');
+    if (!id) {
+      id = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      sessionStorage.setItem('enspecta_session_id', id);
+    }
+    return id;
+  } catch { return 'unknown'; }
+}
+
 function escapeHtml(str) {
   return str
     .replace(/&/g, '&amp;')
@@ -54,13 +65,20 @@ function renderMarkdown(text) {
   const win = document.createElement('div');
   win.className = 'enspecta-chat-window enspecta-chat-hidden';
   win.innerHTML = `
-    <div class="enspecta-chat-header">Aida — Besiktningsmannen</div>
+    <div class="enspecta-chat-header">
+      <div class="enspecta-chat-avatar">👷</div>
+      <div>
+        <div class="enspecta-chat-header-name">Aida</div>
+        <div class="enspecta-chat-header-sub">Besiktningsmannen · Enspecta</div>
+      </div>
+    </div>
     <div class="enspecta-chat-messages"></div>
     <div class="enspecta-chat-quick"></div>
     <div class="enspecta-chat-input-row">
       <textarea class="enspecta-chat-input" placeholder="Skriv din fråga..." rows="1"></textarea>
       <button class="enspecta-chat-send" aria-label="Skicka">➤</button>
     </div>
+    <div class="enspecta-chat-footer">Enspecta · Certifierade besiktningsmän</div>
   `;
 
   document.body.appendChild(toggle);
@@ -121,7 +139,7 @@ function renderMarkdown(text) {
       const res = await fetch(CONFIG.apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, history }),
+        body: JSON.stringify({ message: text, history, sessionId: getSessionId() }),
       });
       typing.remove();
 

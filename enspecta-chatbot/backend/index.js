@@ -4,11 +4,11 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const Anthropic = require('@anthropic-ai/sdk').default;
 const { systemPrompt } = require('./knowledge');
+const { logChat, getStats } = require('./analytics');
 
 const app = express();
 app.use(express.json({ limit: '50kb' }));
 
-// CORS: allow production domains and any localhost port in dev
 // Public widget API — allow all origins so it can be embedded on any site
 app.use(cors());
 
@@ -22,13 +22,39 @@ const limiter = rateLimit({
 });
 app.use('/api/chat', limiter);
 
-// Serve built widget as static file at /widget.js
+// Serve built widget and admin dashboard as static files
 app.use(express.static(path.join(__dirname, '../widget/dist')));
+
+// Admin auth middleware
+function checkAdminAuth(req, res, next) {
+  const password = process.env.ADMIN_PASSWORD;
+  if (!password) return res.status(503).json({ error: 'Admin inte konfigurerat (ADMIN_PASSWORD saknas).' });
+  const auth = req.headers.authorization;
+  if (auth !== `Bearer ${password}`) return res.status(401).json({ error: 'Fel lösenord.' });
+  next();
+}
+
+// Admin dashboard page
+app.get('/admin', (_req, res) => {
+  res.sendFile(path.join(__dirname, '../widget/dist/admin.html'));
+});
+
+// Admin stats API
+app.get('/api/admin/stats', checkAdminAuth, async (_req, res) => {
+  try {
+    const stats = await getStats();
+    if (!stats) return res.status(503).json({ error: 'Analytics inte konfigurerat (SUPABASE_URL/SUPABASE_ANON_KEY saknas).' });
+    res.json(stats);
+  } catch (err) {
+    console.error('Admin stats error:', err.message);
+    res.status(500).json({ error: 'Kunde inte hämta statistik.' });
+  }
+});
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 app.post('/api/chat', async (req, res) => {
-  const { message, history } = req.body;
+  const { message, history, sessionId } = req.body;
 
   if (!message || typeof message !== 'string' || message.trim().length === 0) {
     return res.status(400).json({
@@ -46,6 +72,7 @@ app.post('/api/chat', async (req, res) => {
     });
   }
 
+  const sid = (typeof sessionId === 'string' && sessionId) ? sessionId : 'unknown';
   const validRoles = new Set(['user', 'assistant']);
   const truncatedHistory = Array.isArray(history)
     ? history
@@ -72,8 +99,11 @@ app.post('/api/chat', async (req, res) => {
 
     const reply = response.content[0]?.text ?? '';
     res.json({ reply });
+
+    logChat({ sessionId: sid, userMessage: message, botReply: reply, hadError: false }).catch(() => {});
   } catch (err) {
     console.error('Claude API error:', err.message);
+    logChat({ sessionId: sid, userMessage: message, botReply: null, hadError: true }).catch(() => {});
     res.status(500).json({ error: 'Något gick fel. Försök igen eller kontakta oss direkt.' });
   }
 });
