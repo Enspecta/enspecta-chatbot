@@ -56,24 +56,24 @@ const css = `
 .enspecta-chat-avatar-wrap {
   position: relative;
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
 }
 .enspecta-chat-avatar {
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255,255,255,0.35);
   display: block;
 }
 .enspecta-chat-avatar-wrap::after {
   content: '';
   position: absolute;
-  bottom: 0px;
-  right: 0px;
-  width: 10px;
-  height: 10px;
+  bottom: 1px;
+  right: 1px;
+  width: 12px;
+  height: 12px;
   background: #4cd964;
   border-radius: 50%;
   border: 2px solid #1a3c5e;
@@ -86,12 +86,13 @@ const css = `
   align-self: flex-start;
 }
 .enspecta-chat-bubble-avatar {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  border: 1.5px solid #e4edf6;
+  border: 2px solid #e4edf6;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
 }
 .enspecta-chat-header-name {
   font-weight: 600;
