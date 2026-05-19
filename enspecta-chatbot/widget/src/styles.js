@@ -18,6 +18,7 @@ const css = `
   justify-content: center;
 }
 .enspecta-chat-toggle:hover { background: #245080; }
+.enspecta-chat-toggle:focus-visible { outline: 3px solid #245080; outline-offset: 2px; }
 
 .enspecta-chat-window {
   position: fixed;
@@ -108,6 +109,9 @@ const css = `
   0%, 80%, 100% { transform: translateY(0); }
   40% { transform: translateY(-6px); }
 }
+@media (prefers-reduced-motion: reduce) {
+  .enspecta-chat-typing span { animation: none; }
+}
 
 .enspecta-chat-quick {
   display: flex;
@@ -140,11 +144,11 @@ const css = `
   border-radius: 8px;
   padding: 8px 10px;
   font-size: 14px;
-  outline: none;
   resize: none;
   font-family: inherit;
 }
 .enspecta-chat-input:focus { border-color: #1a3c5e; }
+.enspecta-chat-input:focus-visible { outline: 2px solid #1a3c5e; outline-offset: 2px; }
 
 .enspecta-chat-send {
   background: #1a3c5e;
@@ -158,6 +162,7 @@ const css = `
 }
 .enspecta-chat-send:hover { background: #245080; }
 .enspecta-chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+.enspecta-chat-send:focus-visible { outline: 3px solid #245080; outline-offset: 2px; }
 
 @media (max-width: 400px) {
   .enspecta-chat-window {
