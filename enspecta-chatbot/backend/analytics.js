@@ -10,6 +10,18 @@ function getClient() {
   return supabase;
 }
 
+async function logVoiceCall({ callId, transcript, summary, durationSeconds }) {
+  const db = getClient();
+  if (!db) return;
+  const { error } = await db.from('voice_logs').insert({
+    call_id: callId,
+    transcript: transcript || null,
+    summary: summary || null,
+    duration_seconds: durationSeconds || null,
+  });
+  if (error) console.error('Voice log insert error:', error.message);
+}
+
 async function logChat({ sessionId, userMessage, botReply, hadError }) {
   const db = getClient();
   if (!db) {
@@ -36,7 +48,7 @@ async function getStats() {
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
   const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  const [total, today, week, errors, topQ, daily, recent] = await Promise.all([
+  const [total, today, week, errors, topQ, daily, recent, voiceTotal, voiceRecent] = await Promise.all([
     db.from('chat_logs').select('*', { count: 'exact', head: true }),
     db.from('chat_logs').select('*', { count: 'exact', head: true }).gte('created_at', todayStart),
     db.from('chat_logs').select('*', { count: 'exact', head: true }).gte('created_at', weekStart),
@@ -45,6 +57,9 @@ async function getStats() {
     db.rpc('daily_chats', { days: 7 }),
     db.from('chat_logs').select('session_id, user_message, bot_reply, had_error, created_at')
       .order('created_at', { ascending: false }).limit(50),
+    db.from('voice_logs').select('*', { count: 'exact', head: true }),
+    db.from('voice_logs').select('call_id, transcript, summary, duration_seconds, created_at')
+      .order('created_at', { ascending: false }).limit(20),
   ]);
 
   return {
@@ -55,7 +70,9 @@ async function getStats() {
     topQuestions: topQ.data || [],
     dailyChats: daily.data || [],
     recentLogs: recent.data || [],
+    totalVoiceCalls: voiceTotal.count ?? 0,
+    recentVoiceCalls: voiceRecent.data || [],
   };
 }
 
-module.exports = { logChat, getStats };
+module.exports = { logChat, logVoiceCall, getStats };

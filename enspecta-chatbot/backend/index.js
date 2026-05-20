@@ -4,7 +4,7 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 const Anthropic = require('@anthropic-ai/sdk').default;
 const { systemPrompt } = require('./knowledge');
-const { logChat, getStats } = require('./analytics');
+const { logChat, logVoiceCall, getStats } = require('./analytics');
 
 const app = express();
 app.use(express.json({ limit: '50kb' }));
@@ -91,6 +91,20 @@ app.get('/api/admin/stats', checkAdminAuth, async (_req, res) => {
     console.error('Admin stats error:', err.message);
     res.status(500).json({ error: 'Kunde inte hämta statistik.' });
   }
+});
+
+// VAPI webhook — tar emot samtalsdata när ett röstsamtal avslutas
+app.post('/api/vapi-webhook', async (req, res) => {
+  const msg = req.body?.message;
+  if (msg?.type === 'end-of-call-report') {
+    logVoiceCall({
+      callId: msg.call?.id || null,
+      transcript: msg.transcript || null,
+      summary: msg.summary || null,
+      durationSeconds: msg.durationSeconds || null,
+    }).catch(() => {});
+  }
+  res.sendStatus(200);
 });
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });

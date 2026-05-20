@@ -9,11 +9,11 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', system-ui, sans-serif; background: #f0f4f8; color: #1a1a1a; min-height: 100vh; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f0f6f2; color: #1a1a1a; min-height: 100vh; }
 
     /* ── Login ── */
     #login-overlay {
-      position: fixed; inset: 0; background: #f0f4f8;
+      position: fixed; inset: 0; background: #f0f6f2;
       display: flex; align-items: center; justify-content: center; z-index: 100;
     }
     .login-card {
@@ -23,19 +23,19 @@
       display: flex; flex-direction: column; gap: 16px;
     }
     .login-brand {
-      font-size: 13px; font-weight: 600; color: #1a3c5e;
+      font-size: 13px; font-weight: 600; color: #1d6e45;
       letter-spacing: 0.5px; text-transform: uppercase;
     }
-    .login-card h1 { font-size: 22px; font-weight: 700; color: #1a3c5e; }
+    .login-card h1 { font-size: 22px; font-weight: 700; color: #1d6e45; }
     .login-card p { font-size: 14px; color: #666; }
     .login-card input {
       border: 1.5px solid #d0dce8; border-radius: 10px;
       padding: 11px 14px; font-size: 14px; font-family: inherit;
       width: 100%; transition: border-color 0.15s;
     }
-    .login-card input:focus { outline: none; border-color: #1a3c5e; }
+    .login-card input:focus { outline: none; border-color: #1d6e45; }
     .login-card button {
-      background: #1a3c5e; color: #fff; border: none;
+      background: #1d6e45; color: #fff; border: none;
       border-radius: 10px; padding: 12px; font-size: 14px;
       font-weight: 600; cursor: pointer; font-family: inherit;
       transition: background 0.15s;
@@ -48,7 +48,7 @@
     #dashboard.visible { display: flex; }
 
     header {
-      background: linear-gradient(135deg, #1a3c5e 0%, #1e5491 100%);
+      background: linear-gradient(135deg, #1d6e45 0%, #165a38 100%);
       color: #fff; padding: 0 32px;
       display: flex; align-items: center; gap: 16px; height: 64px;
     }
@@ -72,7 +72,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     }
     .stat-label { font-size: 12px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; }
-    .stat-value { font-size: 32px; font-weight: 700; color: #1a3c5e; margin-top: 6px; }
+    .stat-value { font-size: 32px; font-weight: 700; color: #1d6e45; margin-top: 6px; }
     .stat-value.error { color: #c0392b; }
 
     /* ── Cards ── */
@@ -80,7 +80,7 @@
       background: #fff; border-radius: 12px; padding: 22px 24px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     }
-    .card h2 { font-size: 15px; font-weight: 600; color: #1a3c5e; margin-bottom: 16px; }
+    .card h2 { font-size: 15px; font-weight: 600; color: #1d6e45; margin-bottom: 16px; }
 
     /* ── Chart ── */
     .chart-wrap { height: 200px; }
@@ -93,25 +93,25 @@
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     thead th {
       text-align: left; padding: 8px 10px;
-      border-bottom: 2px solid #e4edf6;
+      border-bottom: 2px solid #d8ece2;
       font-size: 11px; text-transform: uppercase;
       letter-spacing: 0.4px; color: #888;
     }
     tbody tr:nth-child(even) { background: #f8fafc; }
-    tbody td { padding: 8px 10px; border-bottom: 1px solid #f0f4f8; }
+    tbody td { padding: 8px 10px; border-bottom: 1px solid #f0f6f2; }
     tbody td:first-child { color: #aab; font-weight: 600; width: 32px; }
-    tbody td:last-child { color: #1a3c5e; font-weight: 600; width: 52px; }
+    tbody td:last-child { color: #1d6e45; font-weight: 600; width: 52px; }
     .q-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px; }
 
     /* ── Recent logs ── */
     .log-list { display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow-y: auto; }
     .log-item {
-      border: 1px solid #e4edf6; border-radius: 10px; padding: 12px 14px;
+      border: 1px solid #d8ece2; border-radius: 10px; padding: 12px 14px;
       font-size: 13px;
     }
     .log-item.error-item { border-color: #fad7d7; background: #fff8f8; }
     .log-meta { font-size: 11px; color: #aab; margin-bottom: 5px; }
-    .log-q { font-weight: 500; color: #1a3c5e; margin-bottom: 4px; }
+    .log-q { font-weight: 500; color: #1d6e45; margin-bottom: 4px; }
     .log-a { color: #555; }
 
     /* ── Loading / error ── */
@@ -135,11 +135,16 @@
 <!-- Dashboard -->
 <div id="dashboard">
   <header>
+    <img src="/aida.svg" alt="Aida" style="width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);flex-shrink:0;">
     <div>
       <div class="header-brand">Enspecta Admin</div>
-      <div class="header-sub">Aida · Chatbot Analytics</div>
+      <div class="header-sub">Aida Enspectsson · Virtuell Besiktningstekniker</div>
     </div>
     <div class="header-spacer"></div>
+    <div style="text-align:right;font-size:11px;opacity:0.7;line-height:1.6;margin-right:16px;">
+      <strong style="font-size:13px;opacity:1;">AIDA</strong><br>
+      Artificial Intelligent<br>Dedicated Agent
+    </div>
     <button id="logout-btn">Logga ut</button>
   </header>
 
@@ -159,8 +164,8 @@
         <div class="stat-value" id="s-week">—</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Fel</div>
-        <div class="stat-value error" id="s-errors">—</div>
+        <div class="stat-label">Röstsamtal totalt</div>
+        <div class="stat-value" id="s-voice">—</div>
       </div>
     </div>
 
@@ -182,6 +187,11 @@
         <h2>Senaste konversationer</h2>
         <div class="log-list" id="log-list"><div class="loading">Laddar…</div></div>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>🎙️ Senaste röstsamtal</h2>
+      <div class="log-list" id="voice-list"><div class="loading">Laddar…</div></div>
     </div>
   </main>
 </div>
@@ -207,7 +217,21 @@
     document.getElementById('s-total').textContent = data.totalMessages.toLocaleString('sv-SE');
     document.getElementById('s-today').textContent = data.todayMessages.toLocaleString('sv-SE');
     document.getElementById('s-week').textContent = data.weekMessages.toLocaleString('sv-SE');
-    document.getElementById('s-errors').textContent = data.errorCount.toLocaleString('sv-SE');
+    document.getElementById('s-voice').textContent = (data.totalVoiceCalls ?? 0).toLocaleString('sv-SE');
+  }
+
+  function renderVoiceCalls(calls) {
+    const el = document.getElementById('voice-list');
+    if (!calls.length) { el.innerHTML = '<div class="loading">Inga röstsamtal ännu</div>'; return; }
+    el.innerHTML = calls.map(c => {
+      const mins = c.duration_seconds ? Math.floor(c.duration_seconds / 60) + 'm ' + (c.duration_seconds % 60) + 's' : '—';
+      return `
+        <div class="log-item">
+          <div class="log-meta">${fmt(c.created_at)} · ⏱ ${mins}</div>
+          ${c.summary ? `<div class="log-q">📝 ${esc(c.summary)}</div>` : ''}
+          ${c.transcript ? `<div class="log-a" style="white-space:pre-wrap;max-height:120px;overflow-y:auto;">${esc(c.transcript.slice(0, 400))}${c.transcript.length > 400 ? '…' : ''}</div>` : ''}
+        </div>`;
+    }).join('');
   }
 
   function renderChart(daily) {
@@ -222,7 +246,7 @@
         datasets: [{
           label: 'Meddelanden',
           data: msgs,
-          backgroundColor: '#1a3c5e',
+          backgroundColor: '#1d6e45',
           borderRadius: 6,
         }]
       },
@@ -231,7 +255,7 @@
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#f0f4f8' } },
+          y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#f0f6f2' } },
           x: { grid: { display: false } }
         }
       }
@@ -274,6 +298,7 @@
       renderChart(data.dailyChats);
       renderTopQuestions(data.topQuestions);
       renderLogs(data.recentLogs);
+      renderVoiceCalls(data.recentVoiceCalls || []);
     } catch (e) {
       const el = document.getElementById('dash-error');
       el.textContent = 'Fel: ' + e.message;

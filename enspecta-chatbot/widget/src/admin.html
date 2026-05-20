@@ -164,8 +164,8 @@
         <div class="stat-value" id="s-week">—</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Fel</div>
-        <div class="stat-value error" id="s-errors">—</div>
+        <div class="stat-label">Röstsamtal totalt</div>
+        <div class="stat-value" id="s-voice">—</div>
       </div>
     </div>
 
@@ -187,6 +187,11 @@
         <h2>Senaste konversationer</h2>
         <div class="log-list" id="log-list"><div class="loading">Laddar…</div></div>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>🎙️ Senaste röstsamtal</h2>
+      <div class="log-list" id="voice-list"><div class="loading">Laddar…</div></div>
     </div>
   </main>
 </div>
@@ -212,7 +217,21 @@
     document.getElementById('s-total').textContent = data.totalMessages.toLocaleString('sv-SE');
     document.getElementById('s-today').textContent = data.todayMessages.toLocaleString('sv-SE');
     document.getElementById('s-week').textContent = data.weekMessages.toLocaleString('sv-SE');
-    document.getElementById('s-errors').textContent = data.errorCount.toLocaleString('sv-SE');
+    document.getElementById('s-voice').textContent = (data.totalVoiceCalls ?? 0).toLocaleString('sv-SE');
+  }
+
+  function renderVoiceCalls(calls) {
+    const el = document.getElementById('voice-list');
+    if (!calls.length) { el.innerHTML = '<div class="loading">Inga röstsamtal ännu</div>'; return; }
+    el.innerHTML = calls.map(c => {
+      const mins = c.duration_seconds ? Math.floor(c.duration_seconds / 60) + 'm ' + (c.duration_seconds % 60) + 's' : '—';
+      return `
+        <div class="log-item">
+          <div class="log-meta">${fmt(c.created_at)} · ⏱ ${mins}</div>
+          ${c.summary ? `<div class="log-q">📝 ${esc(c.summary)}</div>` : ''}
+          ${c.transcript ? `<div class="log-a" style="white-space:pre-wrap;max-height:120px;overflow-y:auto;">${esc(c.transcript.slice(0, 400))}${c.transcript.length > 400 ? '…' : ''}</div>` : ''}
+        </div>`;
+    }).join('');
   }
 
   function renderChart(daily) {
@@ -279,6 +298,7 @@
       renderChart(data.dailyChats);
       renderTopQuestions(data.topQuestions);
       renderLogs(data.recentLogs);
+      renderVoiceCalls(data.recentVoiceCalls || []);
     } catch (e) {
       const el = document.getElementById('dash-error');
       el.textContent = 'Fel: ' + e.message;
