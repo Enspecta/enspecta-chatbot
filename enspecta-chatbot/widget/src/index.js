@@ -76,17 +76,24 @@ function renderMarkdown(text) {
     </div>
     <div class="enspecta-chat-messages"></div>
     <div class="enspecta-chat-quick"></div>
+
+    <!-- Röstvy — visas när samtal är aktivt -->
+    <div class="enspecta-voice-screen" id="enspecta-voice-screen">
+      <img class="enspecta-voice-screen-avatar" src="https://enspecta-chatbot.onrender.com/aida.svg" alt="Aida Enspectsson">
+      <div class="enspecta-voice-screen-name">Aida Enspectsson</div>
+      <div class="enspecta-voice-screen-status" id="enspecta-voice-status">Ansluter…</div>
+      <div class="enspecta-voice-screen-pulse" id="enspecta-voice-pulse"></div>
+      <div class="enspecta-voice-screen-btns">
+        <button class="enspecta-voice-screen-mute" id="enspecta-voice-mute" title="Stäng av mikrofon">🎤</button>
+        <button class="enspecta-voice-screen-end" id="enspecta-voice-end" title="Avsluta samtal">Avsluta</button>
+      </div>
+    </div>
+
     <div class="enspecta-chat-voice-bar">
       <button class="enspecta-chat-voice-btn" id="enspecta-voice-btn">
         <span class="enspecta-voice-icon">🎙️</span>
         <span class="enspecta-voice-label">Prata med mig</span>
       </button>
-      <div class="enspecta-chat-voice-active" id="enspecta-voice-active">
-        <div class="enspecta-voice-pulse"></div>
-        <span class="enspecta-voice-status" id="enspecta-voice-status">Ansluter…</span>
-        <button class="enspecta-voice-mute" id="enspecta-voice-mute" title="Stäng av mikrofon">🎤</button>
-        <button class="enspecta-voice-end" id="enspecta-voice-end" title="Avsluta samtal">📵</button>
-      </div>
     </div>
     <div class="enspecta-chat-input-row">
       <textarea class="enspecta-chat-input" placeholder="Skriv din fråga..." rows="1"></textarea>
@@ -103,10 +110,27 @@ function renderMarkdown(text) {
   const inputEl = win.querySelector('.enspecta-chat-input');
   const sendBtn = win.querySelector('.enspecta-chat-send');
   const voiceBtn = win.querySelector('#enspecta-voice-btn');
-  const voiceActive = win.querySelector('#enspecta-voice-active');
+  const voiceScreen = win.querySelector('#enspecta-voice-screen');
   const voiceStatus = win.querySelector('#enspecta-voice-status');
+  const voicePulse = win.querySelector('#enspecta-voice-pulse');
   const voiceMute = win.querySelector('#enspecta-voice-mute');
   const voiceEnd = win.querySelector('#enspecta-voice-end');
+
+  function showVoiceScreen() {
+    voiceScreen.classList.add('visible');
+    win.querySelector('.enspecta-chat-messages').style.display = 'none';
+    win.querySelector('.enspecta-chat-quick').style.display = 'none';
+    win.querySelector('.enspecta-chat-voice-bar').style.display = 'none';
+    win.querySelector('.enspecta-chat-input-row').style.display = 'none';
+  }
+
+  function hideVoiceScreen() {
+    voiceScreen.classList.remove('visible');
+    win.querySelector('.enspecta-chat-messages').style.display = '';
+    win.querySelector('.enspecta-chat-quick').style.display = '';
+    win.querySelector('.enspecta-chat-voice-bar').style.display = '';
+    win.querySelector('.enspecta-chat-input-row').style.display = '';
+  }
   let quickShown = false;
   let vapi = null;
   let muted = false;
@@ -209,23 +233,22 @@ function renderMarkdown(text) {
       if (!vapi) {
         vapi = new Vapi(VAPI_PUBLIC_KEY);
         vapi.on('call-start', () => {
-          voiceBtn.style.display = 'none';
-          voiceActive.classList.add('visible');
+          showVoiceScreen();
           voiceStatus.textContent = 'Aida lyssnar…';
+          voicePulse.classList.add('active');
         });
         vapi.on('call-end', () => {
-          voiceBtn.style.display = '';
-          voiceActive.classList.remove('visible');
+          hideVoiceScreen();
           voiceBtn.disabled = false;
           muted = false;
           voiceMute.textContent = '🎤';
+          voicePulse.classList.remove('active');
         });
         vapi.on('speech-start', () => { voiceStatus.textContent = 'Aida pratar…'; });
         vapi.on('speech-end', () => { voiceStatus.textContent = 'Aida lyssnar…'; });
         vapi.on('error', (e) => {
           console.error('VAPI error:', e);
-          voiceBtn.style.display = '';
-          voiceActive.classList.remove('visible');
+          hideVoiceScreen();
           voiceBtn.disabled = false;
           addBubble('Det gick inte att starta samtalet: ' + (e?.message || JSON.stringify(e)), 'bot');
         });
@@ -234,6 +257,7 @@ function renderMarkdown(text) {
     } catch (e) {
       console.error('Voice start error:', e);
       voiceBtn.disabled = false;
+      hideVoiceScreen();
       addBubble('Det gick inte att starta samtalet: ' + (e?.message || String(e)), 'bot');
     }
   });

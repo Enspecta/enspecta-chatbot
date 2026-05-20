@@ -212,6 +212,81 @@ const css = `
 .enspecta-chat-send:disabled { opacity: 0.45; cursor: not-allowed; }
 .enspecta-chat-send:focus-visible { outline: 3px solid #1d6e45; outline-offset: 2px; }
 
+/* ── Röstvy ── */
+.enspecta-voice-screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 28px 20px;
+  background: #f4f8f6;
+  gap: 14px;
+}
+.enspecta-voice-screen.visible { display: flex; }
+
+.enspecta-voice-screen-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #1d6e45;
+  box-shadow: 0 4px 24px rgba(29,110,69,0.20);
+}
+.enspecta-voice-screen-name {
+  font-weight: 700;
+  font-size: 18px;
+  color: #1a1a1a;
+}
+.enspecta-voice-screen-status {
+  font-size: 14px;
+  color: #1d6e45;
+  font-weight: 500;
+  min-height: 20px;
+}
+#enspecta-voice-pulse {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #1d6e45;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#enspecta-voice-pulse.active {
+  opacity: 1;
+  animation: enspecta-pulse 1.4s infinite;
+}
+.enspecta-voice-screen-btns {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+.enspecta-voice-screen-mute {
+  background: #fff;
+  border: 2px solid #c8ddd1;
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.enspecta-voice-screen-mute:hover { background: #f0f6f2; }
+.enspecta-voice-screen-end {
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 0 24px;
+  height: 52px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.enspecta-voice-screen-end:hover { background: #a93226; }
+
 .enspecta-chat-voice-bar {
   padding: 0 12px 10px;
   background: #fff;
