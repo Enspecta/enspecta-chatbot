@@ -71,6 +71,11 @@ app.get('/api/db-test', async (_req, res) => {
   });
 });
 
+// Root → demo page
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(__dirname, '../widget/dist/demo.html'));
+});
+
 // Admin dashboard page
 app.get('/admin', (_req, res) => {
   res.sendFile(path.join(__dirname, '../widget/dist/admin.html'));
