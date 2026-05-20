@@ -67,7 +67,7 @@ function renderMarkdown(text) {
   win.innerHTML = `
     <div class="enspecta-chat-header">
       <div class="enspecta-chat-avatar-wrap">
-        <img class="enspecta-chat-avatar" src="https://enspecta-chatbot.onrender.com/aida.svg" alt="Aida Enspectsson">
+        <img class="enspecta-chat-avatar" src="https://enspecta-chatbot.onrender.com/aida.jpg" alt="Aida Enspectsson">
       </div>
       <div>
         <div class="enspecta-chat-header-name">Aida Enspectsson</div>
@@ -79,7 +79,7 @@ function renderMarkdown(text) {
 
     <!-- Röstvy — visas när samtal är aktivt -->
     <div class="enspecta-voice-screen" id="enspecta-voice-screen">
-      <img class="enspecta-voice-screen-avatar" src="https://enspecta-chatbot.onrender.com/aida.svg" alt="Aida Enspectsson">
+      <img class="enspecta-voice-screen-avatar" src="https://enspecta-chatbot.onrender.com/aida.jpg" alt="Aida Enspectsson">
       <div class="enspecta-voice-screen-name">Aida Enspectsson</div>
       <div class="enspecta-voice-screen-status" id="enspecta-voice-status">Ansluter…</div>
       <div class="enspecta-voice-screen-pulse" id="enspecta-voice-pulse"></div>
@@ -148,7 +148,7 @@ function renderMarkdown(text) {
     row.className = 'enspecta-chat-bot-row';
     const avatar = document.createElement('img');
     avatar.className = 'enspecta-chat-bubble-avatar';
-    avatar.src = 'https://enspecta-chatbot.onrender.com/aida.svg';
+    avatar.src = 'https://enspecta-chatbot.onrender.com/aida.jpg';
     avatar.alt = 'Aida';
     const bubble = document.createElement('div');
     bubble.className = 'enspecta-chat-bubble enspecta-chat-bot';
