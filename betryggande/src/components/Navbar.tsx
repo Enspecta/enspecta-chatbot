@@ -89,7 +89,7 @@ export function Navbar() {
               'lg:hidden p-2 transition-colors',
               scrolled ? 'text-navy' : 'text-white'
             )}
-            aria-label="Öppna meny"
+            aria-label={mobileOpen ? 'Stäng meny' : 'Öppna meny'}
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
