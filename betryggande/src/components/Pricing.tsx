@@ -131,7 +131,9 @@ export function Pricing() {
                 </ul>
 
                 <a
-                  href="#teckna"
+                  href="https://www.betryggande.se/intresseanmalan"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={cn(
                     'block text-center font-sans font-semibold py-3.5 rounded-lg transition-colors duration-200',
                     tier.highlight

@@ -36,7 +36,9 @@ export function Hero() {
             {/* CTAs */}
             <div className="flex flex-wrap gap-4">
               <a
-                href="#teckna"
+                href="https://www.betryggande.se/intresseanmalan"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-brand-orange hover:bg-brand-orange-dark text-white font-sans font-semibold px-7 py-4 rounded-lg transition-colors duration-200 text-base"
               >
                 Teckna försäkring

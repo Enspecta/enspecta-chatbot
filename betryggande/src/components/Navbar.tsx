@@ -75,7 +75,9 @@ export function Navbar() {
               010 330 04 40
             </a>
             <a
-              href="#teckna"
+              href="https://www.betryggande.se/intresseanmalan"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-brand-orange hover:bg-brand-orange-dark text-white font-sans font-semibold text-sm px-5 py-2.5 rounded-lg transition-colors duration-200"
             >
               Teckna försäkring
@@ -117,7 +119,9 @@ export function Navbar() {
                 010 330 04 40
               </a>
               <a
-                href="#teckna"
+                href="https://www.betryggande.se/intresseanmalan"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="block text-center bg-brand-orange text-white font-sans font-semibold py-3 rounded-lg"
               >
                 Teckna försäkring

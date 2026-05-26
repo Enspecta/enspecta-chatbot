@@ -5,7 +5,7 @@ const links = {
     { label: 'Standard försäkring', href: '#priser' },
     { label: 'Plus försäkring', href: '#priser' },
     { label: 'Anmäl skada', href: '#kontakt' },
-    { label: 'Teckna försäkring', href: '#teckna' },
+    { label: 'Teckna försäkring', href: 'https://www.betryggande.se/intresseanmalan' },
   ],
   Företaget: [
     { label: 'Om oss', href: '#om-oss' },
