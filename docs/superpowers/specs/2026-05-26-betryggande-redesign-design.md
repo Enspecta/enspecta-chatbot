@@ -35,14 +35,14 @@ Instrument Sans: 400, 500, 600
 | `bg-alt` | `#F5F5F2` | Alternativ section-bakgrund |
 | `text` | `#1A1A2E` | Primär text |
 | `muted` | `#6B7280` | Sekundär text |
-| `border` | `#E5E5E1` | Subtila kanter |
+| `stroke` | `#E5E5E1` | Subtila kanter (namnges `stroke` för att undvika konflikt med Tailwinds inbyggda `border`-utility) |
 
 ### Spacing & Känsla
 
 - 8px grid
 - Sektionspadding: `py-28 lg:py-36`
 - Inga rundade blob-former, inga generiska gradients
-- Dividers: tunna raka linjer (`border-b border-border`)
+- Dividers: tunna raka linjer (`border border-stroke`)
 - CTA-knappar: rektangulära med lätt avrundning (`rounded-lg`), inte pill-formade
 - Inga wave-SVGs i sektionsövergångar — raka kanter
 
@@ -65,8 +65,8 @@ Instrument Sans: 400, 500, 600
 - Ingress: Instrument Sans 400, `text-white/70`, max-width 520px
 - Trust-signaler: tre inline-siffror/fakta (`2022 · FI-Licensierat · Malmö`) i stället för checkmark-lista
 - CTA-knappar: primär orange + sekundär ghost med vit border
-- Höger kolumn (desktop): vit "trust card" med en subtil entry-animation (fade-in + translateY)
-- Trust card innehåll: företagsnamn, de två prisplanerna, tre stats-siffror
+- Höger kolumn (desktop): vit "trust card" med en subtil entry-animation: `opacity 0→1` + `translateY(16px)→0`, duration 600ms, delay 200ms, easing `ease-out`, implementeras med Tailwind `animate-fade-up` eller inline CSS
+- Trust card innehåll: företagsnamn ("Betryggande"), de två prisplanerna (Standard från 7 690 kr / Plus från 8 690 kr), tre stats-siffror: `2022` (Grundat) · `FI` (Licensierat) · `Malmö` (Kontor)
 - Botten: rak horisontell kant mot nästa sektion (ej wave-SVG)
 - Telefonnummer behålls som sekundär kontaktlänk
 
@@ -75,7 +75,7 @@ Instrument Sans: 400, 500, 600
 - Bakgrund: `#FAFAF8`
 - Sektion-rubrik i DM Serif Display
 - 6 kort i `sm:grid-cols-2 lg:grid-cols-3`
-- Kort: vit bakgrund, `border border-border`, `rounded-xl`, padding `p-6`
+- Kort: vit bakgrund, `border border-stroke`, `rounded-xl`, padding `p-6`
 - Ikoner: brand-blue linjeikon utan färgad bakgrund
 - Ingen `hover:-translate-y` — subtilt `hover:shadow-md` räcker
 
@@ -84,7 +84,8 @@ Instrument Sans: 400, 500, 600
 - Bakgrund: `#F5F5F2`
 - Steg representeras av stora typografiska siffror (`01`, `02`, `03`, `04`) i DM Serif Display, ~80px, `text-brand-blue/20` som bakgrundselement
 - Ovanpå: ikon, titel, beskrivning
-- Desktop: 4-kolumns grid med tunn `border-r border-border` mellan stegen (ej sista)
+- Desktop (`lg`): 4-kolumns grid med tunn `border-r border-stroke` mellan stegen (ej sista)
+- Mobil (`< lg`): 1-kolumns stack, `border-b border-stroke` under varje steg (ej sista), centrerad text
 - Ingen connecting-line SVG
 
 ### Priser
@@ -92,19 +93,20 @@ Instrument Sans: 400, 500, 600
 - Bakgrund: vit
 - Sektion-rubrik i DM Serif Display
 - 2 kort i `lg:grid-cols-2`, max-width 4xl, centrerade
-- **Standard-kort**: vit bakgrund, `border border-border`, `rounded-2xl`
-  - Pristabell: ren tabell-stil med `border-b border-border` per rad
-  - CTA: brand-blue bakgrund
-- **Plus-kort**: `#0B2545` bakgrund, vit text, `rounded-2xl`
+- **Standard-kort**: vit bakgrund, `border border-stroke`, `rounded-2xl`
+  - Pristabell: ren tabell-stil med `border-b border-stroke` per rad
+  - CTA: brand-blue bakgrund, vit text
+- **Plus-kort**: `#0B2545` (navy) bakgrund, vit text, `rounded-2xl`
   - "Rekommenderas"-badge: orange, positionerad top-right
-  - CTA: orange bakgrund
+  - CTA: orange bakgrund, vit text — **intentionell inversion**: navy-kortet får orange CTA för kontrast mot den mörka bakgrunden; vit-kortet får brand-blue CTA för kontrast mot ljus bakgrund
   - Siffror i pristabell: DM Serif Display
 
 ### AboutBanner
 
-- Tunn sektionsbrytning, max 2 kolumner
-- Vänster: rubrik + 2–3 meningar om företaget
-- Höger: kontaktinfo (telefon, e-post, adress)
+- Reducerad padding: `py-16 lg:py-20` (jämfört med standardsektionens `py-28 lg:py-36`) — fungerar som en visuell andningspaus
+- 2-kolumns grid (`lg:grid-cols-2`), stacker till 1-kolumn på mobil
+- Vänster: rubrik i DM Serif Display + 2–3 meningar om företaget
+- Höger: kontaktinfo (telefon, e-post, adress) med Lucide-ikoner
 - Bakgrund: `#FAFAF8`
 
 ### Contact
@@ -124,7 +126,7 @@ Instrument Sans: 400, 500, 600
 
 ## Implementationsordning
 
-1. Uppdatera `tailwind.config.js` — lägg till nya tokens (`navy`, `bg`, `bg-alt`, `border`, uppdatera `orange`)
+1. Uppdatera `tailwind.config.js` — lägg till nya tokens (`navy`, `bg`, `bg-alt`, `stroke`, uppdatera `orange`)
 2. Uppdatera `index.css` / `index.html` — Google Fonts import, font-family tokens
 3. Komponent för komponent i denna ordning:
    - Navbar
