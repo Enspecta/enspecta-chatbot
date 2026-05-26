@@ -151,6 +151,33 @@ Instrument Sans: 400, 500, 600
 
 ---
 
+## Verkligt innehåll (från www.betryggande.se)
+
+Allt innehåll i komponenter ska matcha den nuvarande live-siten:
+
+**Kontaktuppgifter**
+- Telefon: 010 330 04 40 (vardagar 08–16)
+- E-post: info@betryggande.se
+- Adress: Hyllie vattenparksgata 12, 215 32 Malmö
+- Org.nr: 559389-0931
+
+**Hero**
+- Rubrik: "Betryggande dolda fel­försäkring"
+- Ingress: "Ska du sälja eller köpa ett hus? Säkerställ en betryggande överlåtelse med Betryggande dolda fel­försäkring!"
+
+**Kärnvärden / Features**
+Tre primära: Sälja ("Säkerställ en smidig och betryggande fastighetsförsäljning med hjälp av Betryggande Dolda Fel, skydda dig mot framtida anspråk."), Köpa ("Förvärva din drömfastighet med förtroende, upptäck fördelarna med Betryggande Dolda Fel försäkring som skyddar dig mot dolda fel efter köpet."), Anmäl skada ("Har du uppdag­at ett dolt fel? Klicka på 'anmäl' och fyll i formuläret."). Övriga tre features (besiktningsbaserat, personlig service, licensierade experter) behålls från befintlig kod.
+
+**Footer-länkar**
+- Integritetspolicy (GDPR)
+- Förköpsinformation
+- Allmänna villkor
+- Regulatoriska medlemskap: Finansinspektionen, Tydliga, InsureSec
+
+**Priser** — behålls från befintlig kod (Standard från 7 690 kr, Plus från 8 690 kr)
+
+---
+
 ## Vad som INTE ingår
 
 - Ny funktionalitet (formulärlogik, backend-integration)
