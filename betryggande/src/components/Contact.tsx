@@ -84,9 +84,19 @@ export function Contact() {
           <div className="space-y-5">
             <div id="teckna" className="bg-navy rounded-2xl p-8">
               <h3 className="font-serif text-2xl text-white mb-2">Teckna försäkring</h3>
-              <p className="font-sans text-white/55 text-sm leading-relaxed mb-8">
-                Ring oss eller skicka ett mail så hjälper vi dig teckna rätt försäkring för din fastighetsaffär.
+              <p className="font-sans text-white/55 text-sm leading-relaxed mb-6">
+                Fyll i vår intresseanmälan online — välj paket, täckningsbelopp och besiktningstyp. Klart på några minuter.
               </p>
+              <a
+                href="https://www.betryggande.se/intresseanmalan"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-sans font-semibold text-sm py-4 rounded-lg transition-colors duration-200 mb-6"
+              >
+                Fyll i intresseanmälan
+                <ArrowRight className="w-4 h-4" />
+              </a>
+              <p className="font-sans text-white/35 text-xs text-center mb-5">eller kontakta oss direkt</p>
               <div className="space-y-3">
                 <a
                   href="tel:0103300440"
